@@ -5,12 +5,12 @@ import java.io.File
 private val input = File("src/day05/input.txt").readLines()
 
 fun main() {
-    var seen = mutableMapOf<Pair<Int, Int>, Int>()
+    val seen = mutableMapOf<Pair<Int, Int>, Int>()
     input.parse()
         .filter { line -> line.x1 == line.x2 || line.y1 == line.y2 }
         .drawLines(seen)
     println("Part 1: ${seen.values.count { it > 1 }}")
-    seen = mutableMapOf()
+    seen.clear()
     input.parse()
         .drawLines(seen)
     println("Part 2: ${seen.values.count { it > 1 }}")
