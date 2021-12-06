@@ -9,15 +9,15 @@ fun main() {
     println("Part 2: ${spawnFish(256)}")
 }
 
-fun spawnFish(days: Int): Long {
-    val fish = input.groupingBy { it }.eachCount().mapValues { it.value.toLong() }.toMutableMap()
-    (0 until days).forEach { _ ->
-        val spawned = fish.getOrDefault(0, 0)
-        (0..8).forEach {
-            fish[it] = fish.getOrDefault(it + 1, 0)
+fun spawnFish(days: Int): Long =
+    input.groupingBy { it }.eachCount().mapValues { it.value.toLong() }.toMutableMap().let { fish ->
+        repeat(days) {
+            val spawned = fish.getOrDefault(0, 0)
+            (0..8).forEach {
+                fish[it] = fish.getOrDefault(it + 1, 0)
+            }
+            fish[6] = fish.getOrDefault(6, 0) + spawned
+            fish[8] = fish.getOrDefault(8, 0) + spawned
         }
-        fish[6] = fish.getOrDefault(6, 0) + spawned
-        fish[8] = fish.getOrDefault(8, 0) + spawned
+        fish.values.sum()
     }
-    return fish.values.sum()
-}
