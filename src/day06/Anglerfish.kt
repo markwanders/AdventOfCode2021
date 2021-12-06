@@ -2,7 +2,7 @@ package day06
 
 import java.io.File
 
-private val input = File("src/day06/input.txt").readText().split(",").map { it.toInt() }.toMutableList()
+private val input = File("src/day06/input.txt").readText().split(",").map { it.toInt() }
 
 fun main() {
     println("Part 1: ${spawnFish(80)}")
