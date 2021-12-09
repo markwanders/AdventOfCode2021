@@ -16,7 +16,7 @@ fun main() {
     println(minima.sumOf { 1 + Character.getNumericValue(input[it.first][it.second]) })
     val basinSizes = minima.map { minimum ->
         val seen = mutableSetOf(minimum)
-        val queue = mutableSetOf(minimum)
+        val queue = mutableListOf(minimum)
         while (queue.iterator().hasNext()) {
             val position = queue.iterator().next()
             queue.remove(position)
