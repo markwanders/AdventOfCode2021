@@ -1,7 +1,6 @@
 package day08
 
 import java.io.File
-import kotlin.math.sign
 
 private val input = File("src/day08/input.txt").readLines()
 
