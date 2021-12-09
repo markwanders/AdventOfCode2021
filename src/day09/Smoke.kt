@@ -16,14 +16,12 @@ fun main() {
     println(minima.sumOf { 1 + Character.getNumericValue(input[it.first][it.second]) })
     val basinSizes = minima.map { minimum ->
         val seen = mutableSetOf(minimum)
-        val neighbors = neighbors(minimum.first, minimum.second)
-            .filter { input[it.first][it.second] != '9' }
-            .toMutableSet()
-        while (neighbors.iterator().hasNext()) {
-            val position = neighbors.iterator().next()
-            neighbors.remove(position)
+        val queue = mutableSetOf(minimum)
+        while (queue.iterator().hasNext()) {
+            val position = queue.iterator().next()
+            queue.remove(position)
             seen.add(position)
-            neighbors.addAll(neighbors(position.first, position.second)
+            queue.addAll(neighbors(position.first, position.second)
                 .filter { input[it.first][it.second] != '9' }
                 .filter { it !in seen })
         }
