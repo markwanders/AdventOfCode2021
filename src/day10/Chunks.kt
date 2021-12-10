@@ -21,16 +21,16 @@ fun main() {
             toComplete.add(lastOpenings)
         }
         errorChar
-    }.sumBy { char ->
+    }.sumOf { char ->
         when (char) {
             ')' -> 3
             ']' -> 57
             '}' -> 1197
             '>' -> 25137
-            else -> 0
+            else -> 0L
         }
     }
-    println(errors)
+    println("Part 1: $errors")
     val completeScores = toComplete.map { line ->
         line.reversed().map<Char, Long> {
             when (brackets[it]) {
@@ -44,5 +44,5 @@ fun main() {
             (acc * 5) + v
         }
     }
-    println(completeScores.sorted()[completeScores.size/2])
+    println("Part 2: ${completeScores.sorted()[completeScores.size/2]}")
 }
