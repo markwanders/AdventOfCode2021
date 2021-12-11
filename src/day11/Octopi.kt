@@ -13,10 +13,14 @@ fun main() {
         }
     }
     var flashCounter = 0
-    repeat(100) {
+    val flashed = mutableSetOf<Pair<Int, Int>>()
+    var step = 0
+    while(flashed.size != 100) {
+        step++
+        flashed.clear()
         octopi.forEach { (k, v) -> octopi[k] = v + 1 }
         val toFlash = octopi.entries.filter { it.value > 9 }.map { it.key }.toMutableList()
-        val flashed = mutableSetOf<Pair<Int, Int>>()
+
         while (toFlash.isNotEmpty()) {
             val next = toFlash.removeLast()
             flashed.add(next)
@@ -28,9 +32,13 @@ fun main() {
 
         }
         flashed.forEach { octopi[it] = 0 }
-        flashCounter += flashed.size
+        if (step <= 100) {
+            flashCounter += flashed.size
+        }
+
     }
     println(flashCounter)
+    println(step)
 }
 
 private fun neighbors(y: Int, x: Int): List<Pair<Int, Int>> =
