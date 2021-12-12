@@ -3,15 +3,16 @@ package day12
 import java.io.File
 
 private val input = File("src/day12/input.txt").readLines()
-private val caves = mutableMapOf<String, MutableList<String>>()
+private val caves = mutableMapOf<String, Set<String>>()
+    .withDefault { setOf() }
+    .apply {
+        input.map { it.split("-") }.forEach { (a, b) ->
+            put(a, getValue(a) + b)
+            put(b, getValue(b) + a)
+        }
+    }
 
 fun main() {
-    input.forEach {
-        val (first, last) = it.split("-").run { first() to last() }
-        caves[first] = (caves.getOrDefault(first, mutableListOf()) + last) as MutableList<String>
-        caves[last] = (caves.getOrDefault(last, mutableListOf()) + first) as MutableList<String>
-    }
-    println(caves)
     println(traverse())
     println(traverse(part2 = true))
 }
