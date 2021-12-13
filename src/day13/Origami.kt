@@ -5,34 +5,36 @@ import java.io.File
 private val input = File("src/day13/input.txt").readLines()
 
 fun main() {
-    val dots = mutableMapOf<Pair<Int, Int>, Int>().withDefault { 0 }
+    val dots = mutableSetOf<Pair<Int, Int>>()
     val folds = mutableListOf<Pair<Char, Int>>()
     input.forEach { line ->
         "fold along ([xy])=([0-9]*)".toRegex().find(line)?.run {
             folds.add(destructured.component1().first() to destructured.component2().toInt())
         }
         "([0-9]*),([0-9]*)".toRegex().find(line)?.run {
-            dots[destructured.component1().toInt() to destructured.component2().toInt()] = 1
+            dots.add(destructured.component1().toInt() to destructured.component2().toInt())
         }
     }
-    println(dots)
-    println(folds)
-    println(dots.values.sum())
-    folds.forEach { (axis, coordinate) ->
+    folds.forEachIndexed { index, (axis, coordinate) ->
         when (axis) {
-            'y' -> dots.entries.filter { entry -> entry.key.second > coordinate }.forEach { (key, value) ->
-                    val folded = key.first to 2 * coordinate - key.second
-                    dots[folded] = dots.getValue(folded) + value
-                    dots.remove(key)
-                }
-
-            'x' -> dots.entries.filter { entry -> entry.key.first > coordinate }.forEach { (key, value) ->
-                    val folded = 2 * coordinate - key.first to key.second
-                    dots[folded] = dots.getValue(folded) + value
-                    dots.remove(key)
-                }
+            'y' -> dots.filter { dot -> dot.second > coordinate }.forEach { (x, y) ->
+                val folded = x to 2 * coordinate - y
+                dots.add(folded)
+                dots.remove(x to y)
+            }
+            'x' -> dots.filter { dot -> dot.first > coordinate }.forEach { (x, y) ->
+                val folded = 2 * coordinate - x to y
+                dots.add(folded)
+                dots.remove(x to y)
+            }
+        }
+        if (index == 0) {
+            println(dots.size)
         }
     }
-    println(dots)
-    println(dots.values.sum())
+    val image = MutableList(dots.maxOf { it.second } + 1) { MutableList(dots.maxOf { it.first } + 1) { "  " }}
+    dots.forEach { image[it.second][it.first] = "##" }
+    image.forEach { y ->
+        println(y.joinToString(""))
+    }
 }
