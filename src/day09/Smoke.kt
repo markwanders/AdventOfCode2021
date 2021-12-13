@@ -6,8 +6,8 @@ private val input = File("src/day09/input.txt").readLines().map { it.toCharArray
 
 fun main() {
     val minima = mutableListOf<Pair<Int, Int>>()
-    (input.indices).forEach { y ->
-        (input[y].indices).forEach { x ->
+    for (y in input.indices) {
+        for (x in input[y].indices) {
             if (input[y][x] < neighbors(y, x).minOf { input[it.first][it.second] }) {
                 minima += y to x
             }
@@ -17,9 +17,8 @@ fun main() {
     val basinSizes = minima.map { minimum ->
         val seen = mutableSetOf(minimum)
         val queue = mutableListOf(minimum)
-        while (queue.iterator().hasNext()) {
-            val position = queue.iterator().next()
-            queue.remove(position)
+        while (queue.isNotEmpty()) {
+            val position = queue.removeLast()
             seen.add(position)
             queue.addAll(neighbors(position.first, position.second)
                 .filter { input[it.first][it.second] != '9' }

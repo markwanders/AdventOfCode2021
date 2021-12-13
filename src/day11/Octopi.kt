@@ -7,8 +7,8 @@ private val input = File("src/day11/input.txt").readLines().map { y -> y.split("
 
 fun main() {
     val octopi = mutableMapOf<Pair<Int, Int>, Int>()
-    input.indices.forEach { y ->
-        input[y].indices.forEach { x ->
+    for (y in input.indices) {
+        for (x in input[y].indices) {
             octopi[y to x] = input[y][x]
         }
     }
@@ -29,13 +29,11 @@ fun main() {
                 octopi[it] = octopi[it]!! + 1
             }
             toFlash.addAll(neighbors.filter { octopi[it]!! > 9 }.filterNot { it in flashed || it in toFlash })
-
         }
         flashed.forEach { octopi[it] = 0 }
         if (step <= 100) {
             flashCounter += flashed.size
         }
-
     }
     println(flashCounter)
     println(step)

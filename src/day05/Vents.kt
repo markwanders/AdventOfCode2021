@@ -5,7 +5,7 @@ import java.io.File
 private val input = File("src/day05/input.txt").readLines()
 
 fun main() {
-    val seen = mutableMapOf<Pair<Int, Int>, Int>()
+    val seen = mutableMapOf<Pair<Int, Int>, Int>().withDefault { 0 }
     input.parse()
         .filter { line -> line.x1 == line.x2 || line.y1 == line.y2 }
         .drawLines(seen)
@@ -27,7 +27,7 @@ fun List<Line>.drawLines(seen: MutableMap<Pair<Int, Int>, Int>) = forEach { line
     var x = line.x1
     var y = line.y1
     while (x != line.x2 + dx || y != line.y2 + dy) {
-        seen[Pair(x, y)] = seen.getOrDefault(Pair(x, y), 0) + 1
+        seen[x to y] = seen.getValue(x to y) + 1
         x += dx
         y += dy
     }

@@ -10,17 +10,15 @@ fun main() {
     val errors = input.map { line ->
         val lastOpenings = mutableListOf<Char>()
         var error = false
-        val errorChar = line.firstOrNull { character ->
+        line.firstOrNull { character ->
             when (character) {
                 in brackets.keys -> lastOpenings.add(character)
                 in brackets.values -> error = character != brackets[lastOpenings.removeLast()]
             }
             error
+        }.also {
+            if (it == null) toComplete.add(lastOpenings)
         }
-        if (errorChar == null) {
-            toComplete.add(lastOpenings)
-        }
-        errorChar
     }.sumOf { char ->
         when (char) {
             ')' -> 3
@@ -44,5 +42,5 @@ fun main() {
             (acc * 5) + v
         }
     }
-    println("Part 2: ${completeScores.sorted()[completeScores.size/2]}")
+    println("Part 2: ${completeScores.sorted()[completeScores.size / 2]}")
 }
