@@ -26,11 +26,11 @@ fun main() {
             if (index == 1) println(dotsAcc.size)
         }
     }.let { foldedDots ->
-        MutableList(foldedDots.maxOf { it.second } + 1) { MutableList(foldedDots.maxOf { it.first } + 1) { "  " } }.apply {
-            foldedDots.forEach { this[it.second][it.first] = "##" }
-            this.forEach { y ->
-                println(y.joinToString(""))
+        for (y in 0..foldedDots.maxOf { it.second }) {
+            for (x in 0..foldedDots.maxOf { it.first }) {
+                if(x to y in foldedDots) print("##") else print("  ")
             }
+            println()
         }
     }
 
