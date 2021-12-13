@@ -28,7 +28,7 @@ fun traverse(part2: Boolean = false): Int {
             paths++
             continue
         }
-        caves.getOrDefault(position, mutableListOf()).forEach { cave ->
+        caves.getOrDefault(position, mutableSetOf()).forEach { cave ->
             if (cave !in smallCaveHistory) {
                 val newSmallCaveHistory = smallCaveHistory.toMutableSet()
                 if (cave.lowercase() == cave) {
