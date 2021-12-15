@@ -5,13 +5,14 @@ import java.io.File
 private val input = File("src/day15/input.txt").readLines()
 
 fun main() {
-    val cave = hashMapOf<Pair<Int, Int>, Int>().withDefault { 0 }
+    val cave = hashMapOf<Pair<Int, Int>, Int>()
     for (y in input.indices) {
         for (x in input[y].indices) {
             cave[y to x] = Character.getNumericValue(input[y][x])
         }
     }
     println(shortestPath(cave, cave.keys.maxByOrNull { it.first + it.second }!!))
+    println(shortestPath(cave, input.size * 5 - 1 to input.size * 5 - 1))
 }
 
 fun shortestPath(map: MutableMap<Pair<Int, Int>, Int>, target: Pair<Int, Int>): Int {
@@ -32,16 +33,23 @@ fun shortestPath(map: MutableMap<Pair<Int, Int>, Int>, target: Pair<Int, Int>): 
         if (currentNode.position == target) {
             return currentNode.distance
         }
-        neighbors(map.keys.toList(), currentNode.position.first, currentNode.position.second).forEach {
-            queue.add(Node(it, currentNode.distance + map.getValue(it)))
+        neighbors(currentNode.position.first, currentNode.position.second, target).forEach { (ny, nx) ->
+            val max = map.keys.maxOf { it.first } + 1
+            val down =  ny / max
+            val right = nx / max
+            val projectedY = ny % max
+            val projectedX = nx % max
+            var riskValue = map.getValue(projectedY to projectedX) + down + right
+            while (riskValue > 9) riskValue -= 9
+            queue.add(Node(ny to nx, currentNode.distance + riskValue))
         }
     }
     return 0
 }
 
-private fun neighbors(map: List<Pair<Int, Int>>, y: Int, x: Int): List<Pair<Int, Int>> =
+private fun neighbors(y: Int, x: Int, target: Pair<Int, Int>): List<Pair<Int, Int>> =
     listOf(y + 1 to x, y - 1 to x, y to x + 1, y to x - 1)
-        .filter { coordinates -> coordinates in map }
+        .filter { coordinates -> coordinates.first >= 0 && coordinates.second >= 0 && coordinates.first <= target.first && coordinates.second <= target.second}
         .map { coordinate -> coordinate.first to coordinate.second }
 
 data class Node(val position: Pair<Int, Int>, val distance: Int)
