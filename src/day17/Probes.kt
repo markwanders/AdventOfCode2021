@@ -8,12 +8,14 @@ val xRange = matches.next()..matches.next()
 val yRange = matches.next()..matches.next()
 
 fun main() {
-    val maxY = (0..1000).maxOf { velocityX ->
-        (0..1000).maxOf { velocityY ->
-            maximumHeight(velocityX, velocityY)
-        }
-    }
-    println(maxY)
+    val velocities = (0..1000).map { velocityX ->
+        (-1000..1000).associateBy({ velocityX to it },
+            { maximumHeight(velocityX, it) })
+    }.flatMap { it.entries }
+        .filter { it.value >= yRange.minOf { it } }
+        .associate { it.key to it.value }
+    println(velocities.maxOf { it.value })
+    println(velocities.keys.size)
 }
 
 fun maximumHeight(initVelocityX: Int, initVelocityY: Int): Int {
@@ -21,14 +23,15 @@ fun maximumHeight(initVelocityX: Int, initVelocityY: Int): Int {
     var positionY = 0
     var velocityX = initVelocityX
     var velocityY = initVelocityY
-    var maxY = 0
-    while (positionX < xRange.maxOf { it } && positionY > yRange.minOf { it }) {
+    val minY = yRange.minOf { it }
+    var maxY = minY
+    while (positionX <= xRange.maxOf { it } && positionY >= minY) {
         positionX += velocityX
         positionY += velocityY
         velocityY--
         if (velocityX > 0) {
             velocityX--
-        } else {
+        } else if (velocityX < 0) {
             velocityX++
         }
         if (positionY > maxY) {
@@ -38,5 +41,5 @@ fun maximumHeight(initVelocityX: Int, initVelocityY: Int): Int {
             return maxY
         }
     }
-    return 0
+    return minY - 1
 }
