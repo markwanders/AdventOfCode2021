@@ -8,8 +8,8 @@ val xRange = matches.next()..matches.next()
 val yRange = matches.next()..matches.next()
 
 fun main() {
-    val velocities = (0..1000).map { velocityX ->
-        (-1000..1000).associateBy({ velocityX to it },
+    val velocities = (0..xRange.maxOf { it }).map { velocityX ->
+        (yRange.minOf { it }..1000).associateBy({ velocityX to it },
             { maximumHeight(velocityX, it) })
     }.flatMap { it.entries }
         .filter { it.value >= yRange.minOf { it } }
