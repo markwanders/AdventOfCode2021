@@ -5,8 +5,9 @@ import java.io.File
 private val input = File("src/day18/input.txt").readLines()
 
 fun main() {
-    val snailfishNumbers = input.map { parse(MathString(it)) }
-    val result = snailfishNumbers.reduce(::addition)
+    val snailfishNumbers: List<SnailfishNumber> = input.map { parse(MathString(it)) }
+    snailfishNumbers.forEach { println(it) }
+    val result: SnailfishNumber = snailfishNumbers.reduce(::addition)
     result.explode()
     println(result)
 }
@@ -38,8 +39,14 @@ data class SnailfishNumber(
     var left: SnailfishNumber? = null,
     var right: SnailfishNumber? = null,
     var value: Int? = null,
-    var depth: Int
+    var depth: Int,
+    var parent: SnailfishNumber? = null
 ) {
+    init {
+        left?.parent = this
+        right?.parent = this
+    }
+
     fun increaseDepth() {
         depth++
         left?.increaseDepth()
@@ -47,10 +54,39 @@ data class SnailfishNumber(
     }
 
     fun explode() {
-        left?.let {
-            if (it.depth == 4) {
+       if(this.depth == 4 && value == null) {
+           println("explode $this")
+           println(this.parent)
+           explodeLeft(this.left?.value)
+           explodeRight(this.right?.value)
+           this.left = null
+           this.right = null
+           this.value = 0
+           return
+       } else {
+           left?.explode()
+           right?.explode()
+       }
+    }
 
-            }
+    private fun explodeLeft(value: Int?) {
+        println("exploding to the left: $value")
+        if (this.parent?.right?.value != null) {
+            this.parent?.right?.value = this.parent?.right?.value!! + value!!
+        } else {
+            this.parent?.right?.right?.explodeLeft(value)
+        }
+    }
+
+    private fun explodeRight(value: Int?) {
+        println("exploding to the right: $value")
+        if (this.parent?.left?.value != null) {
+            this.parent?.left?.value = this.parent?.left?.value!! + value!!
+        } else if(this.parent?.right?.value != null) {
+            this.parent?.right?.value = this.parent?.right?.value!! + value!!
+        }
+        else {
+            this.parent?.left?.left?.explodeRight(value)
         }
     }
 
