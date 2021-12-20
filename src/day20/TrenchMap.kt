@@ -14,7 +14,7 @@ fun main() {
         .associate { it.key to it.value }
         .toMutableMap()
         .withDefault { '.' }
-    repeat(2) {
+    repeat(50) {
         val even = (it + 1)%2 == 0
         val newImage = mutableMapOf<Pair<Int, Int>, Char>().withDefault { if(even) '.' else '#' }
         val yRange = image.keys.minOf { it.first } to image.keys.maxOf { it.first }
@@ -25,9 +25,10 @@ fun main() {
             }
         }
         image = newImage
-        printImage(image)
+        if(it == 1 || it == 49) {
+            println(image.values.sumOf { if(it == '#') 1L else 0 })
+        }
     }
-    println(image.values.sumOf { if(it == '#') 1L else 0 })
 }
 
 fun square(y: Int, x: Int, image: Map<Pair<Int, Int>, Char>): Int {
@@ -38,16 +39,4 @@ fun square(y: Int, x: Int, image: Map<Pair<Int, Int>, Char>): Int {
             image.getValue(y + 1 to x - 1), image.getValue(y + 1 to x), image.getValue(y + 1 to x + 1)
         ).joinToString("")
     return string.map { if (it == '#') '1' else '0' }.joinToString("").toInt(2)
-}
-
-fun printImage(image: Map<Pair<Int, Int>, Char>) {
-    var y = image.keys.minOf { it.first }
-    image.keys.sortedWith(compareBy({ it.first }, { it.second })).forEach {
-        if (it.first > y) {
-            println()
-            y++
-        }
-        print(image[it])
-    }
-    println()
 }
