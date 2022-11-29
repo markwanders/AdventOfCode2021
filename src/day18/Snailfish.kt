@@ -10,6 +10,7 @@ fun main() {
     val snailfishNumbers: List<SnailfishNumber> = input.map { parse(MathString(it)) }
     val result: SnailfishNumber = snailfishNumbers.reduce(::reduce)
     println(result)
+    println(result.magnitude())
 }
 
 fun parse(line: MathString): SnailfishNumber {
@@ -30,19 +31,15 @@ fun parse(line: MathString): SnailfishNumber {
 
 fun reduce(left: SnailfishNumber, right: SnailfishNumber): SnailfishNumber {
     val result = addition(left, right)
-    println(result)
     while (true) {
         if (explode(result)) {
-            println("Finished an explode: $result")
             continue
         }
         if (split(result)) {
-            println("Finished a split: $result")
             continue
         }
         break
     }
-    println("  $left \n+ $right \n= $result")
     return result
 }
 
@@ -76,7 +73,7 @@ fun previousSnailfishNumber(n: SnailfishNumber): SnailfishNumber? {
         return null
     }
 
-    return if (n.parent!!.left == n) {
+    return if (n.parent!!.left === n) {
         previousSnailfishNumber(n.parent!!)
     } else {
         lastValue(n.parent!!.left!!)
@@ -87,7 +84,7 @@ fun nextSnailfishNumber(n: SnailfishNumber): SnailfishNumber? {
     if (n.parent == null) {
         return null
     }
-    return if (n.parent!!.right == n) {
+    return if (n === n.parent!!.right) {
         nextSnailfishNumber(n.parent!!)
     } else {
         firstValue(n.parent!!.right!!)
@@ -116,7 +113,6 @@ fun nextToExplode(n: SnailfishNumber): SnailfishNumber? {
 
 fun explodeSnailfishNumber(n: SnailfishNumber) {
     val (left, right, _, depth, parent) = n
-    println("Exploding: $n, at $depth with $parent")
     val previous = previousSnailfishNumber(n)
     if (previous != null) {
         plus(previous, left!!)
@@ -169,7 +165,6 @@ fun splitSnailfishNumber(n: SnailfishNumber) {
             depth = n.depth,
             left = SnailfishNumber(value = left, depth = n.depth + 1),
             right = SnailfishNumber(value = right, depth = n.depth + 1))
-    println("Splitting $n into $split, ${n.depth} to ${split.depth}")
     if (n.parent!!.left == n) {
         n.parent!!.left = split
     } else {
@@ -195,20 +190,20 @@ data class SnailfishNumber(
         right?.increaseDepth()
     }
 
+    fun magnitude(): Int {
+        return if (value != null) {
+            value!!
+        } else {
+            3 * left!!.magnitude() + 2 * right!!.magnitude()
+        }
+    }
+
     override fun toString(): String =
             if (value != null) {
                 value.toString()
             } else {
                 "[${left.toString()}, ${right.toString()}]"
             }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is SnailfishNumber) {
-            other.value == this.value && other.depth == this.depth && this.left == other.left && this.right == other.right
-        } else {
-            false
-        }
-    }
 }
 
 class MathString(private val string: String) {
