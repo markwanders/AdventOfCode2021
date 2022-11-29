@@ -7,10 +7,14 @@ import kotlin.math.floor
 private val input = File("src/day18/input.txt").readLines()
 
 fun main() {
-    val snailfishNumbers: List<SnailfishNumber> = input.map { parse(MathString(it)) }
-    val result: SnailfishNumber = snailfishNumbers.reduce(::reduce)
-    println(result)
-    println(result.magnitude())
+    println(input.map { parse(MathString(it)) }.reduce(::reduce).magnitude())
+    println(input
+            .flatMapIndexed { i, a ->
+                input.mapIndexed { j, b ->
+                    if (i != j) listOf(parse(MathString(a)), parse(MathString(b))).reduce(::reduce).magnitude() else 0
+                }
+            }
+            .max())
 }
 
 fun parse(line: MathString): SnailfishNumber {
